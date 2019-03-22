@@ -1,0 +1,139 @@
+{
+    "ReRoutes": [
+        {
+            "DownstreamPathTemplate": "/swagger/v1/swagger.json", // 下游游请求模板
+            "DownstreamScheme": "http", //下游服务 schema
+            "UpstreamPathTemplate": "/doc/articleservice/swagger.json", // 上游请求模板
+            "UpstreamHttpMethod": [ "GET", "POST", "DELETE", "PUT" ], // 上游请求http方法
+            //下游服务的地址，如果使用LoadBalancer的话这里可以填多项
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "localhost",
+                    "Port": 5003
+                }
+            ],
+            "Priority": 1, //优先级
+            //LeastConnection – 将请求发往最空闲的那个服务器
+            //"RoundRobin""轮流发送"
+            //"NoLoadBalance" "总是发往第一个请求或者是服务发现",
+            "LoadBalancer": "LeastConnection",
+            "HttpHandlerOptions": {
+                "AllowAutoRedirect": false,
+                "UseCookieContainer": false
+            }
+        },
+        {
+            "ServiceName": "CAS.ArticleService",
+            "DownstreamPathTemplate": "/api/article/{everything}", // 下游游请求模板
+            "DownstreamScheme": "http", //下游服务 schema
+            "UpstreamPathTemplate": "/api/article/{everything}", // 上游请求模板
+            "UpstreamHttpMethod": [ "GET", "POST", "DELETE", "PUT" ], // 上游请求http方法
+            //下游服务的地址，如果使用LoadBalancer的话这里可以填多项
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "localhost",
+                    "Port": 5003
+                }
+            ],
+            "Priority": 1, //优先级
+            //LeastConnection – 将请求发往最空闲的那个服务器
+            //"RoundRobin""轮流发送"
+            //"NoLoadBalance" "总是发往第一个请求或者是服务发现",
+            "LoadBalancer": "LeastConnection",
+            //熔断配置
+            "QoSOptions": {
+                "ExceptionsAllowedBeforeBreaking": 3, //允许的异常请求数
+                "DurationOfBreak": 10, //熔断的时间，单位为秒
+                "TimeoutValue": 5000 //如果下游请求的处理时间超过多少则将请求设置为超时
+            },
+            //缓存配置
+            "FileCacheOptions": {
+                "TtlSeconds": 10,
+                "Region": "somename" //是对缓存进行的一个分区
+            },
+            "HttpHandlerOptions": {
+                "AllowAutoRedirect": false,
+                "UseCookieContainer": false
+            }
+            //,
+            ////配置服务认证
+            //"AuthenticationOptions": {
+            //    "AuthenticationProviderKey": "",
+            //    "AllowedScopes": []
+            //}
+        },
+      {
+            "DownstreamPathTemplate": "/swagger/v1/swagger.json", // 下游游请求模板
+            "DownstreamScheme": "http", //下游服务 schema
+            "UpstreamPathTemplate": "/doc/themeservice/swagger.json", // 上游请求模板
+            "UpstreamHttpMethod": [ "GET", "POST", "DELETE", "PUT" ], // 上游请求http方法
+            //下游服务的地址，如果使用LoadBalancer的话这里可以填多项
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "localhost",
+                    "Port": 6003
+                }
+            ],
+            "Priority": 1, //优先级
+            //LeastConnection – 将请求发往最空闲的那个服务器
+            //"RoundRobin""轮流发送"
+            //"NoLoadBalance" "总是发往第一个请求或者是服务发现",
+            "LoadBalancer": "LeastConnection",
+            "HttpHandlerOptions": {
+                "AllowAutoRedirect": false,
+                "UseCookieContainer": false
+            }
+        },
+        {
+            "ServiceName": "CAS.ThemeService",
+            "DownstreamPathTemplate": "/api/theme/{everything}", // 下游游请求模板
+            "DownstreamScheme": "http", //下游服务 schema
+            "UpstreamPathTemplate": "/api/theme/{everything}", // 上游请求模板
+            "UpstreamHttpMethod": [ "Get" ], // 上游请求http方法
+            //下游服务的地址，如果使用LoadBalancer的话这里可以填多项
+            "DownstreamHostAndPorts": [
+                {
+                    "Host": "localhost",
+                    "Port": 6003
+                }
+
+            ],
+            "Priority": 1, //优先级
+            //LeastConnection – 将请求发往最空闲的那个服务器
+            //"RoundRobin""轮流发送"
+            //"NoLoadBalance" "总是发往第一个请求或者是服务发现",
+            "LoadBalancer": "LeastConnection",
+            //熔断配置
+            "QoSOptions": {
+                "ExceptionsAllowedBeforeBreaking": 3, //允许的异常请求数
+                "DurationOfBreak": 10, //熔断的时间，单位为秒
+                "TimeoutValue": 5000 //如果下游请求的处理时间超过多少则将请求设置为超时
+            },
+            //缓存配置
+            "FileCacheOptions": {
+                "TtlSeconds": 10,
+                "Region": "somename" //是对缓存进行的一个分区
+            },
+            "HttpHandlerOptions": {
+                "AllowAutoRedirect": false,
+                "UseCookieContainer": false
+            }
+            //,
+            ////配置服务认证
+            //"AuthenticationOptions": {
+            //    "AuthenticationProviderKey": "",
+            //    "AllowedScopes": []
+            //}
+        }
+    ],
+    "GlobalConfiguration": {
+        "RequestIdKey": "OcRequestId",
+        "AdministrationPath": "/admin",
+        "RateLimitOptions": {
+            "DisableRateLimitHeaders": false, // Http头  X-Rate-Limit 和 Retry-After 是否禁用
+            "QuotaExceededMessage": "Too many requests, are you OK?", // 当请求过载被截断时返回的消息
+            "HttpStatusCode": 999, // 当请求过载被截断时返回的http status
+            "ClientIdHeader": "client_id" // 用来识别客户端的请求头，默认是 ClientId
+        }
+    }
+}
